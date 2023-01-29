@@ -1,9 +1,9 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-import AuthController from "./auth/AuthController";
-import TasksController from "./tasks/TasksController";
-import config from "./config";
+import { AuthController } from "@/server/auth";
+import { TasksController } from "@/server/tasks";
+import config from "@/server/Config";
 
 
 class Server

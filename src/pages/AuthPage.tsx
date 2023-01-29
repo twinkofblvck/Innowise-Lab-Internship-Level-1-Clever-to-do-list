@@ -1,21 +1,17 @@
 import { Button, Heading, Input, Spinner } from "@chakra-ui/react";
-import { FC, FormEvent, useState } from "react";
-import FormInput from "../components/generic/FormInput";
-import Form from "../components/ui/Form";
-import useRequest from "../hooks/useRequest";
-
-interface IAuthPageProps
-{
-  title: string;
-  action: (email: string, pass: string) => Promise<void>;
-}
+import { ChangeEvent, FC, FormEvent, useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { FormInput } from "@/components/generic";
+import { Form } from "@/components/generic";
+import { useRequest } from "@/hooks";
+import { IAuthPageProps } from "@/pages";
 
 const AuthPage: FC<IAuthPageProps> = ({ title, action }) =>
 {
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
 
-  async function authenticate(e: FormEvent)
+  const authenticate = async(e: FormEvent) =>
   {
     e.preventDefault();
 
@@ -25,30 +21,40 @@ const AuthPage: FC<IAuthPageProps> = ({ title, action }) =>
     if (!cleanEmail || !cleanPass) return;
 
     await action(cleanEmail, cleanPass);
-  }
+  };
+
+  const onEmailChange = useCallback((e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+    setEmail(e.target.value), []);
+
+  const onPasswordChange = useCallback((e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+    setPass(e.target.value), []);
 
   const [authRequest, isLoading] = useRequest<[FormEvent]>(authenticate);
+
+  const { t } = useTranslation();
 
   return (
     <Form onSubmit={authRequest}>
       <Heading>{title}</Heading>
       <FormInput
+        data-testid="auth_email"
         element={props => <Input {...props} />}
         id="email"
-        label="Email"
+        label={t("authForm.email")}
         type="email"
         value={email}
-        onChange={e => setEmail(e.target.value)}
+        onChange={onEmailChange}
       />
       <FormInput
+        data-testid="auth_password"
         element={props => <Input {...props} />}
         id="pass"
-        label="Password"
+        label={t("authForm.password")}
         type="password"
         value={pass}
-        onChange={e => setPass(e.target.value)}
+        onChange={onPasswordChange}
       />
-      <Button type="submit">Submit</Button>
+      <Button type="submit">{t("authForm.submit")}</Button>
       {isLoading && <Spinner />}
     </Form>
   );

@@ -1,16 +1,8 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
 import { FC, useMemo } from "react";
-import { IListTask } from "../../types/task";
-import DateFormatter from "../../utils/DateFormatter";
-import DayMarker from "./DayMarker";
-
-export interface IDaysListItemProps
-{
-  currDate: Date | null;
-  date: Date;
-  setDate: (date: Date) => void;
-  tasks: IListTask[];
-}
+import { useTranslation } from "react-i18next";
+import { IDaysListItemProps } from "@/components/calendar";
+import { DayMarker } from "@/components/calendar";
 
 const DaysListItem: FC<IDaysListItemProps> = ({ currDate, date, setDate, tasks }) =>
 {
@@ -28,13 +20,11 @@ const DaysListItem: FC<IDaysListItemProps> = ({ currDate, date, setDate, tasks }
     return [done, undone];
   }, [tasks]);
 
-  const [day, month] = useMemo(() =>
-  {
-    return DateFormatter.ToParts(date);
-  }, [date]);
+  const { t } = useTranslation();
 
   return (
     <Flex
+      data-testid="dayslist_item"
       cursor="pointer"
       rounded="2xl"
       minW="100px"
@@ -46,9 +36,8 @@ const DaysListItem: FC<IDaysListItemProps> = ({ currDate, date, setDate, tasks }
       onClick={() => setDate(date)}
       _hover={{ outline: "orange solid 2px" }}
     >
-      <Text fontWeight="bold">{day}</Text>
-      <Text fontSize="xs" >{month}</Text>
-
+      <Text fontWeight="bold">{t("tasksPage.calendar.day", { date })}</Text>
+      <Text fontSize="xs" >{t("tasksPage.calendar.month", { date })}</Text>
       <Box>
         {done && <DayMarker done={true} />}
         {undone && <DayMarker done={false} />}

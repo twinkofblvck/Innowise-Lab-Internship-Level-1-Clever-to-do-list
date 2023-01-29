@@ -1,6 +1,6 @@
 import { addDoc, CollectionReference, doc, Query, query, updateDoc, where } from "firebase/firestore";
 import { Firestore, collection } from "firebase/firestore";
-import { IInternalTask, ITask, t_TaskData } from "../../types/task";
+import { IInternalTask, ITask, t_TaskData } from "@/types";
 
 
 export default class TasksController

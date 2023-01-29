@@ -1,15 +1,8 @@
 import { Container, Flex } from "@chakra-ui/react";
 import { FC, useEffect, useRef, useState } from "react";
-import { IListTask } from "../../types/task";
-import Calendar from "../../utils/Calendar";
-import DaysListItem from "./DaysListItem";
-
-interface IDaysListProps
-{
-  setDate: (date: Date) => void;
-  currDate: Date | null;
-  tasks: IListTask[];
-}
+import { Calendar } from "@/utils";
+import { IDaysListProps } from "@/components/calendar";
+import { DaysListItem } from "@/components/calendar";
 
 const DaysList: FC<IDaysListProps> = ({ setDate, currDate, tasks }) =>
 {
@@ -50,7 +43,7 @@ const DaysList: FC<IDaysListProps> = ({ setDate, currDate, tasks }) =>
   }, [loaded]);
 
   return (
-    <Flex w="full" h="120px" overflowX="auto" gap={1} p="1">
+    <Flex data-testid="dayslist" w="full" h="120px" overflowX="auto" gap={1} p="1">
       {list.map(date =>
         <DaysListItem
           key={date.getTime()}

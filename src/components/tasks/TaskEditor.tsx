@@ -1,19 +1,12 @@
 import { ArrowLeftIcon } from "@chakra-ui/icons";
 import { Button, Flex, Heading, IconButton, Input, Spinner, Textarea } from "@chakra-ui/react";
 import { FC, FormEvent, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import useRequest from "../../hooks/useRequest";
-import FormInput from "../generic/FormInput";
-import Form from "../ui/Form";
-
-interface ITaskEditorProps
-{
-  initialTitle?: string;
-  initialDesc?: string;
-  action: (title: string, desc: string) => Promise<void>;
-  btnContent: string;
-  headingContent: string;
-}
+import { useRequest } from "@/hooks";
+import { FormInput } from "@/components/generic";
+import { Form } from "@/components/generic";
+import { ITaskEditorProps } from "@/components/tasks";
 
 const TaskEditor: FC<ITaskEditorProps> = (p) =>
 {
@@ -28,7 +21,7 @@ const TaskEditor: FC<ITaskEditorProps> = (p) =>
     if (p.initialTitle) setTitle(p.initialTitle);
   }, [p.initialTitle, p.initialDesc]);
 
-  async function executeAction(e: FormEvent)
+  const executeAction = async(e: FormEvent) =>
   {
     e.preventDefault();
 
@@ -39,12 +32,14 @@ const TaskEditor: FC<ITaskEditorProps> = (p) =>
 
     await p.action(cleanTitle, cleanDesc);
     router("/");
-  }
+  };
 
   const [actionRequest, isLoading] = useRequest<[FormEvent]>(executeAction);
 
+  const { t } = useTranslation();
+
   return (
-    <Form onSubmit={actionRequest}>
+    <Form data-testid="task_editor" onSubmit={actionRequest}>
       <Heading as={Flex} gap={2}>
         <IconButton
           variant="outline"
@@ -57,14 +52,16 @@ const TaskEditor: FC<ITaskEditorProps> = (p) =>
       <FormInput
         element={props => <Input {...props} />}
         id="title"
-        label="Title"
+        label={t("taskEditor.title")}
         value={title}
+        data-testid="task_editor_title"
         onChange={e => setTitle(e.target.value)}
       />
       <FormInput
         element={props => <Textarea rows={10} {...props} />}
         id="desc"
-        label="Description"
+        label={t("taskEditor.description")}
+        data-testid="task_editor_description"
         value={desc}
         onChange={e => setDesc(e.target.value)}
       />

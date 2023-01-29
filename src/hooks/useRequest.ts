@@ -1,16 +1,16 @@
 import { useState } from "react";
-import useError from "./useError";
+import { useError } from "@/hooks";
 
-type t_ArgType<T extends any[]> = (...args: T) => Promise<void>;
-type t_ReturnType<T extends any[]> = [(...args: T) => Promise<void>, boolean];
+type t_AnyAsyncFunction<T extends any[]> = (...args: T) => Promise<void>;
+type t_RequestHookReturnType<T extends any[]> = [(...args: T) => Promise<void>, boolean];
 
-export default function useRequest<T extends any[]>(fn: t_ArgType<T>): t_ReturnType<T>
+const useRequest = <T extends any[]>(fn: t_AnyAsyncFunction<T>): t_RequestHookReturnType<T> =>
 {
   const [isLoading, setIsLoading] = useState(false);
 
   const errNotify = useError();
 
-  async function request(...args: any)
+  const request = async(...args: any) =>
   {
     try
     {
@@ -25,7 +25,9 @@ export default function useRequest<T extends any[]>(fn: t_ArgType<T>): t_ReturnT
     {
       setIsLoading(false);
     }
-  }
+  };
 
   return [request, isLoading];
-}
+};
+
+export default useRequest;

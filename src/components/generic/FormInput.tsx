@@ -1,19 +1,6 @@
 import { FormLabel } from "@chakra-ui/react";
-import { ChangeEvent, FC, HTMLInputTypeAttribute, memo, ReactElement } from "react";
-
-interface IFormInputElementProps
-{
-  id: string;
-  type?: HTMLInputTypeAttribute;
-  value: string;
-  onChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
-}
-
-interface IFormInputProps extends IFormInputElementProps
-{
-  element: (props: IFormInputElementProps) => ReactElement,
-  label: string;
-}
+import { FC, memo } from "react";
+import { IFormInputProps } from "@/components/generic";
 
 const FormInput: FC<IFormInputProps> = memo(({ label, element, ...props }) =>
 {

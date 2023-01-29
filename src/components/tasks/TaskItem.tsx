@@ -1,14 +1,9 @@
 import { Checkbox, Flex, Text } from "@chakra-ui/react";
 import { FC } from "react";
 import { useNavigate } from "react-router-dom";
-import { IListTask } from "../../types/task";
-import useRequest from "../../hooks/useRequest";
-import server from "../../server/server";
-
-interface ITaskItemProps
-{
-  task: IListTask;
-}
+import { useRequest } from "@/hooks";
+import { server } from "@/server";
+import { ITaskItemProps } from "@/components/tasks";
 
 const TaskItem: FC<ITaskItemProps> = ({ task }) =>
 {
@@ -23,6 +18,7 @@ const TaskItem: FC<ITaskItemProps> = ({ task }) =>
       gap={2}
       my={1}
       _hover={{borderColor: "orange.400"}}
+      data-testid="task_item"
     >
       <Checkbox
         colorScheme="orange"

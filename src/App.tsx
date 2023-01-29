@@ -1,59 +1,57 @@
-import { FC, useEffect } from "react";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import TasksPage from "./pages/TasksPage";
+import { FC, useEffect, useMemo } from "react";
+import { BrowserRouter, Link as RouteLink, Navigate, Route, Routes } from "react-router-dom";
+import { TasksPage, AuthPage, NewTaskPage, UpdateTaskPage } from "@/pages";
 import { useAuthState } from "react-firebase-hooks/auth";
-import server from "./server/server";
-import AuthPage from "./pages/AuthPage";
-import useError from "./hooks/useError";
-import NewTaskPage from "./pages/NewTaskPage";
-import UpdateTaskPage from "./pages/UpdateTaskPage";
-import withSignupLink from "./components/auth/withSignupLink";
-import withLoginLink from "./components/auth/withLoginLink";
-import { Spinner } from "@chakra-ui/react";
+import { server } from "@/server";
+import { useError } from "@/hooks";
+import { Link, Spinner } from "@chakra-ui/react";
+import { WithLinkText } from "@/components/generic";
+import { useAuth } from "@/hooks";
+import { Trans, useTranslation } from "react-i18next";
 
 const App: FC = () =>
 {
   const [userData, isLoading, error] = useAuthState(server.auth.ref);
   const errNotify = useError();
 
-  function signUp(email: string, pass: string)
-  {
-    return server.auth.SignUp(email, pass);
-  }
+  const { logIn, logOut, signUp } = useAuth();
 
-  function logIn(email: string, pass: string)
-  {
-    return server.auth.LogIn(email, pass);
-  }
+  const LoginLink = useMemo(() => (
+    <Trans i18nKey="signupPage.link">
+      Or <Link as={RouteLink} to="/login" color="teal.500">login</Link> with an existing account
+    </Trans>
+  ), []);
 
-  function logOut()
-  {
-    return server.auth.LogOut();
-  }
+  const SignupLink = useMemo(() => (
+    <Trans i18nKey="loginPage.link">
+      Or <Link as={RouteLink} to="/signup" color="teal.500">sign up</Link> for free
+    </Trans>
+  ), []);
+
+  const { t } = useTranslation();
 
   useEffect(() =>
   {
     if (error) errNotify(error.message);
   }, [error]);
 
-  if (isLoading) return <Spinner
-    pos="absolute"
-    left="calc(50vw - 100px)"
-    top="calc(50vh - 100px)"
-    w="200px"
-    h="200px"
-  />;
-
-  return (
+  return isLoading ? (
+    <Spinner
+      pos="absolute"
+      left="calc(50vw - 100px)"
+      top="calc(50vh - 100px)"
+      w="200px"
+      h="200px"
+    />) : (
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={userData ?
           <Navigate to="/" /> :
-          withSignupLink(<AuthPage title="Login" action={logIn} />)} />
+          WithLinkText(<AuthPage title={t("loginPage.title")} action={logIn} />, SignupLink)} />
 
         <Route path="/signup" element={userData ?
           <Navigate to="/" /> :
-          withLoginLink(<AuthPage title="Sign Up" action={signUp} />)} />
+          WithLinkText(<AuthPage title={t("signupPage.title")} action={signUp} />, LoginLink)} />
 
         <Route path="/" element={userData ?
           <TasksPage logOut={logOut} userData={userData} /> :

@@ -6,7 +6,7 @@ const COLORS = ["orange.800", "orange.400"];
 const DayMarker: FC<{ done: boolean; }> = ({ done }) =>
 {
   return (
-    <Badge rounded="full" bg={COLORS[+done]} h="8px" mx="1px" />
+    <Badge data-testid="daymarker" rounded="full" bg={COLORS[+done]} h="8px" mx="1px" />
   );
 };
 
